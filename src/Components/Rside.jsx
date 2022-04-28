@@ -1,18 +1,36 @@
 import React, { Component } from 'react';
 import '../App.css';
+import { useState } from 'react';
+import { db } from '../config.js'
 
-class Rside extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			name: '',
-			mobile: '',
-			email: ''
-		}
-	}
-	render() {
+function Rside() {
+  const [name, setName] = useState("");
+  const [mobileNumber, setMobileNumber] = useState("");
+  const [email, setEmail] = useState("");
+
+  
+  let handleSubmit = async (e) => {
+    e.preventDefault();
+
+    db.collection('contacts').add({
+      name:name,
+      mobileNumber:mobileNumber,
+      email: email,
+    })
+    .then(() => {
+      alert('Soon you will be contacted');
+    })
+    .catch(error  => {
+      alert(error.message);
+    });
+
+    setName("");
+    setMobileNumber("");
+    setEmail("");
+  };
+	
 		return (
-			<>
+			<form onSubmit={handleSubmit}>
 				<div className='rside'>
 					<div className='contactusInf'>
 						<h3>For Any Querry</h3>
@@ -25,16 +43,16 @@ class Rside extends Component {
 					<div className='contactusfrm'>
 							<h2 className='endb'>Enter Your Details Below</h2>
 							<div className='inputArea'>
-								<input type='text' name='Name' placeholder='Enter Your Name' className='inputName' />
-								<input type='phone' name='Mobile' placeholder='Enter Your Mobile Number' className='inputMobile' />
-								<input type='email' name='Email' placeholder='Enter Your Email' className='inputEmail' />
+								<input type='text' value={name} name='Name' placeholder='Enter Your Name' className='inputName'  onChange={(e) => setName(e.target.value)}/>
+								<input type='phone' value={mobileNumber} name='Mobile' placeholder='Enter Your Mobile Number' className='inputMobile' onChange={(e) => setMobileNumber(e.target.value)}/>
+								<input type='email' value={email} name='Email' placeholder='Enter Your Email' className='inputEmail' onChange={(e) => setEmail(e.target.value)}/>
 								<button type='submit' className='submit-btn'>Submit</button>
 							</div>
 					</div>
 				</div>
-			</>
+			</form>
 		)
-	}
+	
 }
 
 export default Rside;
